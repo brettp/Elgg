@@ -128,7 +128,7 @@ function execute_method($method) {
  * @access private
  */
 function get_call_method() {
-	return $_SERVER['REQUEST_METHOD'];
+	return _elgg_services()->request->server->get('REQUEST_METHOD');
 }
 
 /**
@@ -360,9 +360,10 @@ function api_auth_hmac() {
 
 	// Get the secret key
 	$secret_key = $api_user->secret;
+	$req = _elgg_services()->request;
 
 	// get the query string
-	$query = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '?') + 1);
+	$query = substr($req->server->get('REQUEST_URI'), strpos($req->server->get('REQUEST_URI'), '?') + 1);
 
 	// calculate expected HMAC
 	$hmac = calculate_hmac(	$api_header->hmac_algo,
@@ -410,6 +411,8 @@ function api_auth_hmac() {
  * @access private
  */
 function get_and_validate_api_headers() {
+	$req = _elgg_services()->request;
+
 	$result = new stdClass;
 
 	$result->method = get_call_method();
@@ -418,22 +421,22 @@ function get_and_validate_api_headers() {
 		throw new APIException(elgg_echo('APIException:NotGetOrPost'));
 	}
 
-	$result->api_key = $_SERVER['HTTP_X_ELGG_APIKEY'];
+	$result->api_key = $req->server->get('HTTP_X_ELGG_APIKEY');
 	if ($result->api_key == "") {
 		throw new APIException(elgg_echo('APIException:MissingAPIKey'));
 	}
 
-	$result->hmac = $_SERVER['HTTP_X_ELGG_HMAC'];
+	$result->hmac = $req->server->get('HTTP_X_ELGG_HMAC');
 	if ($result->hmac == "") {
 		throw new APIException(elgg_echo('APIException:MissingHmac'));
 	}
 
-	$result->hmac_algo = $_SERVER['HTTP_X_ELGG_HMAC_ALGO'];
+	$result->hmac_algo = $req->server->get('HTTP_X_ELGG_HMAC_ALGO');
 	if ($result->hmac_algo == "") {
 		throw new APIException(elgg_echo('APIException:MissingHmacAlgo'));
 	}
 
-	$result->time = $_SERVER['HTTP_X_ELGG_TIME'];
+	$result->time = $req->server->get('HTTP_X_ELGG_TIME');
 	if ($result->time == "") {
 		throw new APIException(elgg_echo('APIException:MissingTime'));
 	}
@@ -447,23 +450,23 @@ function get_and_validate_api_headers() {
 		throw new APIException(elgg_echo('APIException:TemporalDrift'));
 	}
 
-	$result->nonce = $_SERVER['HTTP_X_ELGG_NONCE'];
+	$result->nonce = $req->server->get('HTTP_X_ELGG_NONCE');
 	if ($result->nonce == "") {
 		throw new APIException(elgg_echo('APIException:MissingNonce'));
 	}
 
 	if ($result->method == "POST") {
-		$result->posthash = $_SERVER['HTTP_X_ELGG_POSTHASH'];
+		$result->posthash = $req->server->get('HTTP_X_ELGG_POSTHASH');
 		if ($result->posthash == "") {
 			throw new APIException(elgg_echo('APIException:MissingPOSTHash'));
 		}
 
-		$result->posthash_algo = $_SERVER['HTTP_X_ELGG_POSTHASH_ALGO'];
+		$result->posthash_algo = $req->server->get('HTTP_X_ELGG_POSTHASH_ALGO');
 		if ($result->posthash_algo == "") {
 			throw new APIException(elgg_echo('APIException:MissingPOSTAlgo'));
 		}
 
-		$result->content_type = $_SERVER['CONTENT_TYPE'];
+		$result->content_type = $req->server->get('CONTENT_TYPE');
 		if ($result->content_type == "") {
 			throw new APIException(elgg_echo('APIException:MissingContentType'));
 		}
