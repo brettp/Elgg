@@ -118,49 +118,75 @@ function forward($location = "", $reason = 'system') {
  * Google's CDN).
  *
  * @param string $name     An identifier for the JavaScript library
- * @param string $url      URL of the JavaScript file
- * @param string $location Page location: head or footer. (default: head)
- * @param int    $priority Priority of the JS file (lower numbers load earlier)
+ * @param string $url      URL of the JavaScript file. Can be relative.
+ * @param array  $options  An array with the following options:
+ *                         location: head|footer|async (default: head). If async, expects an AMD module
+ *                         priority: int    Priority of the JS file (Lower numbers load earlier.
+ *                                          Not needed for AMD modules.)
+ *                         deps:     array  Dependencies for shimmed AMD modules
+ *                         exports:  string Name of the shimmed AMD module to export
  *
  * @return bool
  * @since 1.8.0
  */
-function elgg_register_js($name, $url, $location = 'head', $priority = null) {
+function elgg_register_js($name, $url, $options = array()) {
 	if (empty($name) || empty($url)) {
 		return false;
 	}
 
-	$config = array();
-	if (is_array($url)) {
-		$config = $url;
-		$url = elgg_extract('src', $config);
-		$location = elgg_extract('location', $config, 'async');
-		$priority = elgg_extract('priority', $config);
+	$defaults = array(
+		'location' => 'head',
+		'priority' => null,
+		'url' => elgg_normalize_url($url)
+	);
+
+	if (!is_array($options)) {
+		// @todo: deprecation warning
+		$defaults['priority'] = $options;
+		$options = array();
+		
 	}
 
-	$is_dep = in_array($name, _elgg_services()->amdConfig->getDependencies());
-	$is_file_loaded = _elgg_get_external_file_from_map('js', $name)->loaded;
-	$loaded = $is_dep || $is_file_loaded;
+	$options = array_merge($defaults, $options);
 
-	elgg_unregister_js($name);
-
-	if ($location == 'async') {
-		if ($loaded) {
-			_elgg_services()->amdConfig->addDependency($name);
+	$location = elgg_extract('location', $options);
+	
+	// if re-registering, emulate how this function handles tranditional libs for amd mods
+	if (_elgg_services()->amdConfig->hasModule($name)) {
+		// if going to re-register this as a non-amd mod, remove all amd references
+		// otherwise, replace the amd config info, but don't touch load info
+		if ($location !== 'async') {
+			_elgg_services()->amdConfig->removeModule($name);
+		} else {
+			_elgg_services()->amdConfig->removeShim($name);
+			_elgg_services()->amdConfig->removePath($name);
 		}
-		_elgg_services()->amdConfig->setShim($name, $config);
-		_elgg_services()->amdConfig->setPath($name, elgg_normalize_url($url));
+	}
+
+	// register AMD modules
+	if ($location == 'async') {
+		// remove references to this lib from the externals list
+		// so elgg_load_js() will load it as a mod
+		elgg_unregister_external_file('js', $name);
+		_elgg_services()->amdConfig->addModule($name, $options);
+		
 		return true;
 	}
 
+	// register traditional JS lib
+	// handle situations where elgg_load_js() is called before elgg_register_js()
+	$loaded = _elgg_get_external_file_from_map('js', $name)->loaded;
 	if ($loaded) {
 		elgg_load_external_file('js', $name);
 	}
+	
+	$priority = elgg_extract('priority', $options);
+	
 	return elgg_register_external_file('js', $name, $url, $location, $priority);
 }
 
 /**
- * Unregister a JavaScript file
+ * Unregister a JavaScript file or AMD module.
  *
  * @param string $name The identifier for the JavaScript library
  *
@@ -168,10 +194,9 @@ function elgg_register_js($name, $url, $location = 'head', $priority = null) {
  * @since 1.8.0
  */
 function elgg_unregister_js($name) {
-	_elgg_services()->amdConfig->removeDependency($name);
-	_elgg_services()->amdConfig->unsetShim($name);
-	$result = _elgg_services()->amdConfig->unsetPath($name);
-	return elgg_unregister_external_file('js', $name) || $result;
+	// check amd or ext
+	_elgg_services()->amdConfig->removeModule($name);
+	return elgg_unregister_external_file('js', $name);
 }
 
 /**

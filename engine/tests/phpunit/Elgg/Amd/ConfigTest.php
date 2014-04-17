@@ -4,16 +4,17 @@ class Elgg_Amd_ConfigTest extends PHPUnit_Framework_TestCase {
 	
 	public function testCanConfigureModulePaths() {
 		$amdConfig = new Elgg_Amd_Config();
-		$amdConfig->setPath('jquery', '/some/path.js');
+		$amdConfig->addPath('jquery', '/some/path.js');
 		
 		$configArray = $amdConfig->getConfig();
 		
-		$this->assertEquals('/some/path', $configArray['paths']['jquery']);
+		$this->assertTrue(is_array($configArray['paths']['jquery']));
+		$this->assertContains('/some/path', $configArray['paths']['jquery']);
 	}
 	
 	public function testCanConfigureModuleShims() {
 		$amdConfig = new Elgg_Amd_Config();
-		$amdConfig->setShim('jquery', array(
+		$amdConfig->addShim('jquery', array(
 			'deps' => array(),
 			'exports' => 'jQuery',
 			'random' => 'stuff',
