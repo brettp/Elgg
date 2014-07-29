@@ -279,6 +279,8 @@ function _elgg_admin_init() {
 	elgg_register_action('admin/site/set_maintenance_mode', '', 'admin');
 
 	elgg_register_action('admin/upgrades/upgrade_comments', '', 'admin');
+	elgg_register_action('admin/upgrades/upgrade_datadirs', '', 'admin');
+	elgg_register_action('admin/upgrades/upgrade_discussion_replies', '', 'admin');
 	elgg_register_action('admin/site/regenerate_secret', '', 'admin');
 
 	elgg_register_action('admin/menu/save', '', 'admin');
@@ -634,7 +636,7 @@ function _elgg_admin_plugin_screenshot_page_handler($pages) {
  */
 function _elgg_admin_markdown_page_handler($pages) {
 	elgg_admin_gatekeeper();
-
+	_elgg_admin_add_plugin_settings_menu();
 	elgg_set_context('admin');
 
 	elgg_unregister_css('elgg');

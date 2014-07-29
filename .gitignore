@@ -3,6 +3,9 @@
 /.htaccess
 /mod/*
 
+# Ignore third party code
+node_modules
+
 # don't ignore bundled plugins
 !/mod/aalborg_theme/
 !/mod/blog/
@@ -52,7 +55,11 @@ tmtags
 Thumbs.db
 Desktop.ini
 
+# Codio.com
+startup.sh
+
 # don't ignore special configs
+!/.mailmap
 !/.travis.yml
 !/.scrutinizer.yml
 !.gitignore

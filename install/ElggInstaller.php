@@ -398,12 +398,12 @@ class ElggInstaller {
 				'required' => TRUE,
 				),
 			'siteemail' => array(
-				'type' => 'text',
+				'type' => 'email',
 				'value' => '',
 				'required' => FALSE,
 				),
 			'wwwroot' => array(
-				'type' => 'text',
+				'type' => 'url',
 				'value' => elgg_get_site_url(),
 				'required' => TRUE,
 				),
@@ -474,7 +474,7 @@ class ElggInstaller {
 				'required' => TRUE,
 				),
 			'email' => array(
-				'type' => 'text',
+				'type' => 'email',
 				'value' => '',
 				'required' => TRUE,
 				),
@@ -487,6 +487,7 @@ class ElggInstaller {
 				'type' => 'password',
 				'value' => '',
 				'required' => TRUE,
+				'pattern' => '.{6,}',
 				),
 			'password2' => array(
 				'type' => 'password',
@@ -870,6 +871,14 @@ class ElggInstaller {
 		$CONFIG->sitename = '';
 		$CONFIG->sitedescription = '';
 	}
+	
+	/**
+	 * @return bool Whether the install process is encrypted.
+	 */
+	private function isHttps() {
+	    return (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ||
+	        $_SERVER['SERVER_PORT'] == 443;
+	}
 
 	/**
 	 * Get the best guess at the base URL
@@ -880,10 +889,8 @@ class ElggInstaller {
 	 * @return string
 	 */
 	protected function getBaseUrl() {
-		$protocol = 'http';
-		if (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {
-			$protocol = 'https';
-		}
+		$protocol = $this->isHttps() ? 'https' : 'http';
+		
 		if (isset($_SERVER["SERVER_PORT"])) {
 			$port = ':' . $_SERVER["SERVER_PORT"];
 		} else {
@@ -897,8 +904,7 @@ class ElggInstaller {
 		$uri = substr($uri, 0, $cutoff);
 		$serverName = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
 
-		$url = "$protocol://{$serverName}$port{$uri}";
-		return $url;
+		return "$protocol://{$serverName}$port{$uri}";
 	}
 
 	/**
@@ -1015,11 +1021,11 @@ class ElggInstaller {
 	protected function checkPHP(&$report) {
 		$phpReport = array();
 
-		$elgg_php_version = '5.2.0';
-		if (version_compare(PHP_VERSION, $elgg_php_version, '<')) {
+		$min_php_version = '5.3.3';
+		if (version_compare(PHP_VERSION, $min_php_version, '<')) {
 			$phpReport[] = array(
 				'severity' => 'failure',
-				'message' => elgg_echo('install:check:php:version', array($elgg_php_version, PHP_VERSION))
+				'message' => elgg_echo('install:check:php:version', array($min_php_version, PHP_VERSION))
 			);
 		}
 

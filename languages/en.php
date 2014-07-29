@@ -98,6 +98,7 @@ return array(
 
 	'pageownerunavailable' => 'Warning: The page owner %d is not accessible!',
 	'viewfailure' => 'There was an internal failure in the view %s',
+	'view:missing_param' => "The required parameter '%s' is missing in the view %s",
 	'changebookmark' => 'Please change your bookmark for this page',
 	'noaccess' => 'The content you were trying to view has been removed or you do not have permission to view it.',
 	'error:missing_data' => 'There was some data missing in your request',
@@ -289,6 +290,7 @@ return array(
 	'profile:editdefault:fail' => 'Default profile could not be saved',
 	'profile:field_too_long' => 'Cannot save your profile information because the "%s" section is too long.',
 	'profile:noaccess' => "You do not have permission to edit this profile.",
+	'profile:invalid_email' => '%s must be a valid email address.',
 
 
 /**
@@ -1065,7 +1067,8 @@ Once you have logged in, we highly recommend that you change your password.
 	'installation:minify_css:label' => "Compress CSS (recommended)",
 
 	'installation:htaccess:needs_upgrade' => "You must update your .htaccess file so that the path is injected into the GET parameter __elgg_uri (you can use htaccess_dist as a guide).",
-
+	'installation:htaccess:localhost:connectionfailed' => "Elgg cannot connect to itself to test rewrite rules properly. Check that curl is working and there are no IP restrictions preventing localhost connections.",
+	
 	'installation:systemcache:description' => "The system cache decreases the loading time of Elgg by caching data to files.",
 	'installation:systemcache:label' => "Use system cache (recommended)",
 
@@ -1112,15 +1115,25 @@ Once you have logged in, we highly recommend that you change your password.
 	'item:object:elgg_upgrade' => 'Site upgrades',
 	'admin:upgrades:none' => 'Your installation is up to date!',
 
-	'upgrade:comments:status' => 'There are <b>%s</b> comments that need to be upgraded.',
-	'upgrade:comments:warning' => '<b>Warning:</b> on a large site this upgrade may take a significantly long time!',
-	'upgrade:comments:success_count' => 'Comments upgraded:',
-	'upgrade:comments:error_count' => 'Errors:',
-	'admin:upgrades:comments' => 'Comment upgrade',
-	'upgrade:comments:river_update_failed' => 'Failed to update the river entry for comment id %s',
-	'upgrade:comments:timestamp_update_failed' => 'Failed to update the timestamps for comment id %s',
-	'upgrade:comments:create_failed' => 'Failed to convert comment id %s to an entity.',
-	'upgrade:comments:finished' => 'Upgrade finished',
+	'upgrade:item_count' => 'There are <b>%s</b> items that need to be upgraded.',
+	'upgrade:warning' => '<b>Warning:</b> on a large site this upgrade may take a significantly long time!',
+	'upgrade:success_count' => 'Upgraded:',
+	'upgrade:error_count' => 'Errors:',
+	'upgrade:river_update_failed' => 'Failed to update the river entry for item id %s',
+	'upgrade:timestamp_update_failed' => 'Failed to update the timestamps for item id %s',
+	'upgrade:finished' => 'Upgrade finished',
+	'upgrade:finished_with_errors' => '<p>Upgrade finished with errors. Refresh the page and try running the upgrade again.</p></p><br />If the error recurs, check the server error log for possible cause. You can seek help for fixing the error from the <a href="http://community.elgg.org/groups/profile/179063/elgg-technical-support">Technical support group</a> in the Elgg community.</p>',
+
+	// Strings specific for the comments upgrade
+	'admin:upgrades:comments' => 'Comments upgrade',
+	'upgrade:comment:create_failed' => 'Failed to convert comment id %s to an entity.',
+
+	// Strings specific for the datadir upgrade
+	'admin:upgrades:datadirs' => 'Data directory upgrade',
+
+	// Strings specific for the discussion reply upgrade
+	'admin:upgrades:discussion_replies' => 'Discussion reply upgrade',
+	'discussion:upgrade:replies:create_failed' => 'Failed to convert discussion reply id %s to an entity.',
 
 /**
  * Welcome

@@ -20,8 +20,69 @@ function _elgg_comments_init() {
 	elgg_register_plugin_hook_handler('register', 'menu:entity', '_elgg_comment_setup_entity_menu', 900);
 	elgg_register_plugin_hook_handler('entity:url', 'object', '_elgg_comment_url_handler');
 	elgg_register_plugin_hook_handler('container_permissions_check', 'object', '_elgg_comments_container_permissions_override');
+	elgg_register_plugin_hook_handler('permissions_check', 'object', '_elgg_comments_permissions_override');
+
+	elgg_register_page_handler('comment', '_elgg_comments_page_handler');
 
 	elgg_register_ajax_view('core/ajax/edit_comment');
+}
+
+/**
+ * Page handler for generic comments manipulation.
+ *
+ * @param array $page
+ * @return bool
+ * @access private
+ */
+function _elgg_comments_page_handler($page) {
+
+	switch ($page[0]) {
+
+		case 'edit':
+			elgg_gatekeeper();
+
+			if (empty($page[1])) {
+				register_error(elgg_echo('generic_comment:notfound'));
+				forward(REFERER);
+			}
+			$comment = get_entity($page[1]);
+			if (!($comment instanceof ElggComment) || !$comment->canEdit()) {
+				register_error(elgg_echo('generic_comment:notfound'));
+				forward(REFERER);
+			}
+
+			$target = $comment->getContainerEntity();
+			if (!($target instanceof ElggEntity)) {
+				register_error(elgg_echo('generic_comment:notfound'));
+				forward(REFERER);
+			}
+
+			$title = elgg_echo('generic_comments:edit');
+			elgg_push_breadcrumb($target->getDisplayName(), $target->getURL());
+			elgg_push_breadcrumb($title);
+
+			$params = array(
+				'entity' => $target,
+				'comment' => $comment,
+				'is_edit_page' => true,
+			);
+			$content = elgg_view_form('comment/save', null, $params);
+
+			$params = array(
+				'content' => $content,
+				'title' => $title,
+				'filter' => '',
+			);
+			$body = elgg_view_layout('content', $params);
+			echo elgg_view_page($title, $body);
+
+			return true;
+			break;
+
+		default:
+			return false;
+			break;
+	}
 }
 
 /**
@@ -109,5 +170,26 @@ function _elgg_comments_container_permissions_override($hook, $type, $return, $p
 		return true;
 	}
 
+	return $return;
+}
+
+/**
+ * By default, only authors can edit their comments.
+ * 
+ * @param string  $hook   'permissions_check'
+ * @param string  $type   'object'
+ * @param boolean $return Can the given user edit the given entity?
+ * @param array   $params Array of parameters (entity, user)
+ *
+ * @return boolean Whether the given user is allowed to edit the given comment.
+ */
+function _elgg_comments_permissions_override($hook, $type, $return, $params) {
+	$entity = $params['entity'];
+	$user = $params['user'];
+	
+	if (elgg_instanceof($entity, 'object', 'comment') && $user) {
+		return $entity->getOwnerGUID() == $user->getGUID();
+	}
+	
 	return $return;
 }

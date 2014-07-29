@@ -175,15 +175,6 @@ View and reply to the discussion:
 	'discussion:reply:error:notdeleted' => 'Could not delete the discussion reply',
 
 	'admin:groups' => 'Groups',
-	'admin:groups:upgrades:2013100401' => 'Discussion reply upgrade',
-	'discussion:upgrade:replies:status' => 'There are <b>%s</b> discussion replies that need to be upgraded.',
-	'discussion:upgrade:replies:warning' => '<b>Warning:</b> on a large site this upgrade may take a significantly long time!',
-	'discussion:upgrade:replies:success_count' => 'Discussion replies upgraded:',
-	'discussion:upgrade:replies:error_count' => 'Errors:',
-	'discussion:upgrade:replies:river_update_failed' => 'Failed to update the river entry for discussion reply id %s',
-	'discussion:upgrade:replies:timestamp_update_failed' => 'Failed to update the timestamp for discussion reply id %s',
-	'discussion:upgrade:replies:create_failed' => 'Failed to convert discussion reply id %s to an entity.',
-	'discussion:upgrade:replies:finished' => 'Upgrade finished',
 
 	'reply:this' => 'Reply to this',
 
@@ -270,6 +261,7 @@ or click below to view the group's join requests:
 	'river:join:group:default' => '%s joined the group %s',
 	'river:create:object:groupforumtopic' => '%s added a new discussion topic %s',
 	'river:reply:object:groupforumtopic' => '%s replied on the discussion topic %s',
+	'river:reply:view' => 'view reply',
 
 	'groups:nowidgets' => 'No widgets have been defined for this group.',
 
@@ -307,6 +299,8 @@ or click below to view the group's join requests:
 
 	'groups:invitekilled' => 'The invite has been deleted.',
 	'groups:joinrequestkilled' => 'The join request has been deleted.',
+	'groups:error:addedtogroup' => "Could not add %s to the group",
+	'groups:add:alreadymember' => "%s is already a member of this group",
 
 	/**
 	 * ecml
