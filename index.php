@@ -22,3 +22,6 @@ $request = _elgg_services()->request;
 if (!$router->route($request)) {
 	forward('', '404');
 }
+
+
+echo "done";
