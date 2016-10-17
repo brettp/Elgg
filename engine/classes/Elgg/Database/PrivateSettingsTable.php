@@ -59,11 +59,11 @@ class PrivateSettingsTable {
 	 *  private_setting_name_value_pairs => null|ARR (
 	 *                                       name => 'name',
 	 *                                       value => 'value',
-	 *                                       'operand' => '=',
+	 *                                       'comparison' => '=',
 	 *                                      )
 	 *                               Currently if multiple values are sent via
 	 *                               an array (value => array('value1', 'value2')
-	 *                               the pair's operand will be forced to "IN".
+	 *                               the pair's comparison will be forced to "IN".
 	 *
 	 *  private_setting_name_value_pairs_operator => null|STR The operator to
 	 *                                 use for combining
@@ -132,7 +132,7 @@ class PrivateSettingsTable {
 	 * @param string     $table         Entities table name
 	 * @param array|null $names         Array of names
 	 * @param array|null $values        Array of values
-	 * @param array|null $pairs         Array of names / values / operands
+	 * @param array|null $pairs         Array of names / values / comparisons
 	 * @param string     $pair_operator Operator for joining pairs where clauses
 	 * @param string     $name_prefix   A string to prefix all names with
 	 * @return array
@@ -229,17 +229,17 @@ class PrivateSettingsTable {
 					continue;
 				}
 
-				if (isset($pair['operand'])) {
-					$operand = $this->db->sanitizeString($pair['operand']);
+				if (isset($pair['comparison'])) {
+					$comparison = $this->db->sanitizeString($pair['comparison']);
 				} else {
-					$operand = ' = ';
+					$comparison = ' = ';
 				}
 
 				// for comparing
-				$trimmed_operand = trim(strtolower($operand));
+				$trimmed_comparison = trim(strtolower($comparison));
 
 				// if the value is an int, don't quote it because str '15' < str '5'
-				// if the operand is IN don't quote it because quoting should be done already.
+				// if the comparison is IN don't quote it because quoting should be done already.
 				if (is_numeric($pair['value'])) {
 					$value = $this->db->sanitizeString($pair['value']);
 				} else if (is_array($pair['value'])) {
@@ -257,10 +257,10 @@ class PrivateSettingsTable {
 						$value = '(' . implode(', ', $values_array) . ')';
 					}
 
-					// @todo allow support for non IN operands with array of values.
+					// @todo allow support for non IN comparisons with array of values.
 					// will have to do more silly joins.
-					$operand = 'IN';
-				} else if ($trimmed_operand == 'in') {
+					$comparison = 'IN';
+				} else if ($trimmed_comparison == 'in') {
 					$value = "({$pair['value']})";
 				} else {
 					$value = "'" . $this->db->sanitizeString($pair['value']) . "'";
@@ -273,7 +273,7 @@ class PrivateSettingsTable {
 					on {$table}.guid = ps{$i}.entity_guid";
 
 				$pair_wheres[] = "(ps{$i}.name = '$name' AND ps{$i}.value
-					$operand $value)";
+					$comparison $value)";
 
 				$i++;
 			}

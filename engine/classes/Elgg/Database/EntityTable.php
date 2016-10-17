@@ -1151,12 +1151,12 @@ class EntityTable {
 	 * 	attribute_name_value_pairs => ARR (
 	 *                                   'name' => 'name',
 	 *                                   'value' => 'value',
-	 *                                   'operand' => '=', (optional)
+	 *                                   'comparison' => '=', (optional)
 	 *                                   'case_sensitive' => false (optional)
 	 *                                  )
 	 * 	                             If multiple values are sent via
 	 *                               an array ('value' => array('value1', 'value2')
-	 *                               the pair's operand will be forced to "IN".
+	 *                               the pair's comparison will be forced to "IN".
 	 *
 	 * 	attribute_name_value_pairs_operator => null|STR The operator to use for combining
 	 *                                        (name = value) OPERATOR (name = value); default is AND
@@ -1246,8 +1246,6 @@ class EntityTable {
 			throw new InvalidArgumentException("attribute_name_value_pairs must be an array for elgg_get_entities_from_attributes()");
 		}
 
-		$wheres = array();
-
 		// check if this is an array of pairs or just a single pair.
 		$pairs = $options['attribute_name_value_pairs'];
 		if (isset($pairs['name']) || isset($pairs['value'])) {
@@ -1261,10 +1259,10 @@ class EntityTable {
 				continue;
 			}
 
-			if (isset($pair['operand'])) {
-				$operand = sanitize_string($pair['operand']);
+			if (isset($pair['comparison'])) {
+				$comparison = sanitize_string($pair['comparison']);
 			} else {
-				$operand = '=';
+				$comparison = '=';
 			}
 
 			if (is_numeric($pair['value'])) {
@@ -1279,7 +1277,7 @@ class EntityTable {
 					}
 				}
 
-				$operand = 'IN';
+				$comparison = 'IN';
 				if ($values_array) {
 					$value = '(' . implode(', ', $values_array) . ')';
 				}
@@ -1295,7 +1293,7 @@ class EntityTable {
 				$pair_binary = ($pair['case_sensitive']) ? 'BINARY ' : '';
 			}
 
-			$pair_wheres[] = "({$pair_binary}type_table.$name $operand $value)";
+			$pair_wheres[] = "({$pair_binary}type_table.$name $comparison $value)";
 		}
 
 		if ($where = implode(" {$options['attribute_name_value_pairs_operator']} ", $pair_wheres)) {

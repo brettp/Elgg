@@ -440,12 +440,12 @@ function elgg_list_entities(array $options = array(), $getter = 'elgg_get_entiti
  * 	attribute_name_value_pairs => ARR (
  *                                   'name' => 'name',
  *                                   'value' => 'value',
- *                                   'operand' => '=', (optional)
+ *                                   'comparison' => '=', (optional)
  *                                   'case_sensitive' => false (optional)
  *                                  )
  * 	                             If multiple values are sent via
  *                               an array ('value' => array('value1', 'value2')
- *                               the pair's operand will be forced to "IN".
+ *                               the pair's comparison will be forced to "IN".
  *
  * 	attribute_name_value_pairs_operator => null|STR The operator to use for combining
  *                                        (name = value) OPERATOR (name = value); default is AND

@@ -147,7 +147,6 @@ class Application {
 			'mb_wrapper.php',
 			'memcache.php',
 			'metadata.php',
-			'metastrings.php',
 			'navigation.php',
 			'notification.php',
 			'objects.php',
@@ -410,6 +409,7 @@ class Application {
 		if (php_sapi_name() === 'cli-server') {
 			// The CLI server routes ALL requests here (even existing files), so we have to check for these.
 			if ($path !== '/' && Directory\Local::root()->isFile($path)) {
+				require Directory\Local::root()->getPath($path);
 				// serve the requested resource as-is.
 				return false;
 			}

@@ -383,7 +383,12 @@ class Database {
 
 		$return = array();
 
-		$stmt = $this->executeQuery($query, $this->getConnection('read'), $params);
+		try {
+			$stmt = $this->executeQuery($query, $this->getConnection('read'), $params);
+		} catch (\DatabaseException $e) {
+			$t = true;
+			throw $e;
+		}
 		while ($row = $stmt->fetch()) {
 			if ($callback) {
 				$row = call_user_func($callback, $row);

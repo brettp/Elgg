@@ -60,13 +60,13 @@ class ElggCoreGetEntitiesFromAttributesTest extends \ElggCoreGetEntitiesBaseTest
 		$this->assertIdentical($expected, $result);
 	}
 
-	public function testGetSqlWithSinglePairAndOperand() {
+	public function testGetSqlWithSinglePairAndComparison() {
 		$result = _elgg_get_entity_attribute_where_sql(array(
 			'types' => 'object',
 			'attribute_name_value_pairs' => array(
 				'name' => 'title',
 				'value' => 'foo',
-				'operand' => '<',
+				'comparison' => '<',
 			),
 			'attribute_name_value_pairs_operator' => 'AND',
 		));

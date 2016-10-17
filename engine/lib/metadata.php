@@ -247,13 +247,13 @@ function elgg_enable_metadata(array $options) {
  * 	metadata_name_value_pairs => null|ARR (
  *                                         name => 'name',
  *                                         value => 'value',
- *                                         'operand' => '=',
+ *                                         'comparison' => '=',
  *                                         'case_sensitive' => true
  *                                        )
  *                               Currently if multiple values are sent via
  *                               an array (value => array('value1', 'value2')
- *                               the pair's operand will be forced to "IN".
- *                               If passing "IN" as the operand and a string as the value, 
+ *                               the pair's comparison will be forced to "IN".
+ *                               If passing "IN" as the comparison and a string as the value,
  *                               the value must be a properly quoted and escaped string.
  *
  * 	metadata_name_value_pairs_operator => null|STR The operator to use for combining
@@ -294,7 +294,7 @@ function elgg_list_entities_from_metadata($options) {
 /**
  * Returns metadata name and value SQL where for entities.
  * NB: $names and $values are not paired. Use $pairs for this.
- * Pairs default to '=' operand.
+ * Pairs default to '=' comparison.
  *
  * This function is reused for annotations because the tables are
  * exactly the same.
@@ -304,7 +304,7 @@ function elgg_list_entities_from_metadata($options) {
  *                                    values, and names are joined. annotations / metadata)
  * @param array|null $names             Array of names
  * @param array|null $values            Array of values
- * @param array|null $pairs             Array of names / values / operands
+ * @param array|null $pairs             Array of names / values / comparisons
  * @param string     $pair_operator     ("AND" or "OR") Operator to use to join the where clauses for pairs
  * @param bool       $case_sensitive    Case sensitive metadata names?
  * @param array|null $order_by_metadata Array of names / direction

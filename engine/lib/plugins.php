@@ -337,11 +337,11 @@ function elgg_unset_all_plugin_settings($plugin_id) {
  * 	plugin_user_setting_name_value_pairs => null|ARR (
  *                                         name => 'name',
  *                                         value => 'value',
- *                                         'operand' => '=',
+ *                                         'comparison' => '=',
  *                                        )
  * 	                             Currently if multiple values are sent via
  *                               an array (value => array('value1', 'value2')
- *                               the pair's operand will be forced to "IN".
+ *                               the pair's comparison will be forced to "IN".
  *
  * 	plugin_user_setting_name_value_pairs_operator => null|STR The operator to use for combining
  *                                        (name = value) OPERATOR (name = value); default AND

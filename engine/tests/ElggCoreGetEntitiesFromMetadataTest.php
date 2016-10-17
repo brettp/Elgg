@@ -784,7 +784,7 @@ class ElggCoreGetEntitiesFromMetadataTest extends \ElggCoreGetEntitiesBaseTest {
 	}
 
 
-	function testElggApiGettersEntityMetadataNVPValidNValidVOperandIn() {
+	function testElggApiGettersEntityMetadataNVPValidNValidVComparisonIn() {
 		$subtypes = $this->getRandomValidSubtypes(array('object'), 1);
 		$subtype = $subtypes[0];
 		$md_name = 'test_metadata_name_' . rand();
@@ -834,12 +834,12 @@ class ElggCoreGetEntitiesFromMetadataTest extends \ElggCoreGetEntitiesBaseTest {
 				array(
 					'name' => $md_name,
 					'value' => $md_valid_values,
-					'operand' => 'IN'
+					'comparison' => 'IN'
 				),
 				array(
 					'name' => $md_name2,
 					'value' => $md_valid_values,
-					'operand' => 'IN'
+					'comparison' => 'IN'
 				),
 			),
 			'metadata_name_value_pairs_operator' => 'OR'
@@ -912,12 +912,12 @@ class ElggCoreGetEntitiesFromMetadataTest extends \ElggCoreGetEntitiesBaseTest {
 				array(
 					'name' => $md_name,
 					'value' => $md_valid_values,
-					'operand' => 'IN'
+					'comparison' => 'IN'
 				),
 				array(
 					'name' => $md_name2,
 					'value' => $md_valid_values,
-					'operand' => 'IN'
+					'comparison' => 'IN'
 				),
 			),
 			'metadata_name_value_pairs_operator' => 'OR'
@@ -1276,7 +1276,7 @@ class ElggCoreGetEntitiesFromMetadataTest extends \ElggCoreGetEntitiesBaseTest {
 			'metadata_name_value_pairs' => array(
 				'name' => $md_name,
 				'value' => 4,
-				'operand' => '>'
+				'comparison' => '>'
 			),
 			'order_by_metadata' => array('name' => $md_name, 'as' => 'integer')
 		);

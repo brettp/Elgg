@@ -147,15 +147,14 @@ class MetadataCache {
 			'callback' => false,
 			'distinct' => false,
 			'joins' => array(
-				"JOIN {$db_prefix}metastrings v ON n_table.value_id = v.id",
-				"JOIN {$db_prefix}metastrings n ON n_table.name_id = n.id",
+				"JOIN {$db_prefix}metadata metadata ON metadata.entity_guid = guid",
 			),
-			'selects' => array('n.string AS name', 'v.string AS value'),
-			'order_by' => 'n_table.entity_guid, n_table.time_created ASC, n_table.id ASC',
+			'selects' => array("metadata.name as name", 'metadata.value as value'),
+			'order_by' => 'metadata.entity_guid, metadata.time_created ASC, metadata.id ASC',
 
 			// @todo don't know why this is necessary
 			'wheres' => array(_elgg_get_access_where_sql(array(
-				'table_alias' => 'n_table',
+				'table_alias' => 'metadata',
 				'guid_column' => 'entity_guid',
 			))),
 		);
